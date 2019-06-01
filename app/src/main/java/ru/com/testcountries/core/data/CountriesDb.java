@@ -1,6 +1,4 @@
-package ru.com.testdribbble.core.data;
-
-import org.androidannotations.annotations.EBean;
+package ru.com.testcountries.core.data;
 
 import java.util.List;
 
@@ -8,58 +6,35 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import ru.com.testdribbble.core.data.model.Shot;
+import ru.com.testcountries.core.data.model.Country;
 
-@EBean
-public class ShotsDb {
+public class CountriesDb {
 
     private RealmConfiguration mRealmConfiguration;
 
-    public ShotsDb() {
+    public CountriesDb() {
         mRealmConfiguration = Realm.getDefaultConfiguration();
     }
 
-    public Single<List<Shot>> getShots() {
+    public Single<List<Country>> getCountries() {
         Realm realm = Realm.getInstance(mRealmConfiguration);
-        List<Shot> shots = realm.copyFromRealm(realm.where(Shot.class).findAll());
+        List<Country> countries = realm.copyFromRealm(realm.where(Country.class).findAll());
         realm.close();
-        return Single.just(shots);
+        return Single.just(countries);
     }
 
-    public Single<Shot> getShot(long id) {
-        Realm realm = Realm.getInstance(mRealmConfiguration);
-        Shot shot = null;
-        Shot realmShot = realm.where(Shot.class).equalTo("id", id).findFirst();
-        if (realmShot != null) {
-            shot = realm.copyFromRealm(realmShot);
-        }
-        realm.close();
-        return Single.just(shot);
-    }
-
-    public Completable updateShots(List<Shot> shots) {
+    public Completable updateCountries(List<Country> countries) {
         return Completable.fromAction(() -> {
             Realm realm = Realm.getInstance(mRealmConfiguration);
             realm.executeTransaction(realm1 -> {
-                realm.insertOrUpdate(shots);
+                realm.insertOrUpdate(countries);
             });
             realm.close();
             Realm.compactRealm(mRealmConfiguration);
         });
     }
 
-    public Completable updateShot(Shot shot) {
-        return Completable.fromAction(() -> {
-            Realm realm = Realm.getInstance(mRealmConfiguration);
-            realm.executeTransaction(realm1 -> {
-                realm.insertOrUpdate(shot);
-            });
-            realm.close();
-            Realm.compactRealm(mRealmConfiguration);
-        });
-    }
-
-    public Completable clearAllShots() {
+    public Completable clearAllCountries() {
         return Completable.fromAction(() -> {
             Realm realm = Realm.getInstance(mRealmConfiguration);
             realm.executeTransaction(realm1 -> {

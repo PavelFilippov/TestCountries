@@ -1,4 +1,4 @@
-package ru.com.testcountries.core.http;
+package ru.com.testcountries.app;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,14 +7,12 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 
 import org.androidannotations.annotations.App;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EReceiver;
 import org.androidannotations.annotations.ReceiverAction;
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
 
-import ru.com.testcountries.TheApplication;
 import ru.com.testcountries.core.data.events.NetworkData;
 import ru.com.testcountries.core.utils.NetworkUtils;
 
@@ -46,6 +44,6 @@ public class NetworkConnectivityAware extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
     }
+
 }

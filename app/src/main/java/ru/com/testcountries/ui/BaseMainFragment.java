@@ -1,22 +1,16 @@
-package ru.com.testdribbble.ui;
+package ru.com.testcountries.ui;
 
 import android.os.SystemClock;
-import android.support.v4.app.Fragment;
 
-import ru.com.testdribbble.core.utils.KeyboardUtils;
-import ru.com.testdribbble.ui.main.MainActivity;
+import com.arellomobile.mvp.MvpAppCompatFragment;
 
-public class BaseMainFragment extends Fragment {
+import ru.com.testcountries.ui.screens.activities.MainActivity;
+
+public class BaseMainFragment extends MvpAppCompatFragment {
 
     public MainActivity getMainActivity() {
         if (getActivity() != null) return ((MainActivity) getActivity());
         return null;
-    }
-
-    @Override
-    public void onPause() {
-        KeyboardUtils.hideKeyboard(getMainActivity());
-        super.onPause();
     }
 
     public boolean isDoubleClick(long mLastClickTime) {

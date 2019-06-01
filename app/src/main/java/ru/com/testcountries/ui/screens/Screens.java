@@ -1,9 +1,13 @@
-package ru.com.testcountries.ui;
+package ru.com.testcountries.ui.screens;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import ru.com.testcountries.ui.screens.activities.MainActivity_;
+import ru.com.testcountries.ui.screens.fragments.CountriesFragment_;
+import ru.com.testcountries.ui.screens.fragments.CountryProfileFragment;
+import ru.com.testcountries.ui.screens.fragments.CountryProfileFragment_;
 import ru.terrakok.cicerone.android.support.SupportAppScreen;
 
 public class Screens {
@@ -28,15 +32,20 @@ public class Screens {
             return super.getActivityIntent(context);
         }
 
-//        @Override
-//        public Fragment getFragment() {
-//            return Fragment.instantiate(context, CountriesFragment_.class.getName());
-//        }
+        @Override
+        public Fragment getFragment() {
+            return Fragment.instantiate(context, CountriesFragment_.class.getName());
+        }
     }
 //-----------------------------Country profile screen---------------------------------
 
     public static final class CountryProfileScreen extends SupportAppScreen {
         private Context context;
+        private final String code;
+
+        public CountryProfileScreen(String code) {
+            this.code = code;
+        }
 
         @Override
         public Intent getActivityIntent(Context context) {
@@ -44,10 +53,10 @@ public class Screens {
             return super.getActivityIntent(context);
         }
 
-//        @Override
-//        public Fragment getFragment() {
-//            return Fragment.instantiate(context, CountryProfileFragment_.class.getName());
-//       }
+        @Override
+        public Fragment getFragment() {
+            return Fragment.instantiate(context, CountryProfileFragment_.class.getName(), CountryProfileFragment.getBundle(code));
+        }
     }
 
 }

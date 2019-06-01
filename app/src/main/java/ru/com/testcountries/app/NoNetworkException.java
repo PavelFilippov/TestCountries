@@ -1,4 +1,4 @@
-package ru.com.testcountries.core.exception;
+package ru.com.testcountries.app;
 
 public class NoNetworkException extends RuntimeException {
 }

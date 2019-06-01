@@ -1,4 +1,4 @@
-package ru.com.testcountries.core;
+package ru.com.testcountries.core.configuration;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

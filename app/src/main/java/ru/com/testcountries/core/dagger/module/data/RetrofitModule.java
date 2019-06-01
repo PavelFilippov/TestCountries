@@ -1,4 +1,4 @@
-package ru.com.testcountries.core.dagger.module.http;
+package ru.com.testcountries.core.dagger.module.data;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.FieldNamingStrategy;

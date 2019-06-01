@@ -8,12 +8,13 @@ import javax.inject.Inject;
 import ru.com.testcountries.app.TheApplication;
 import ru.com.testcountries.core.data.CountriesDb;
 import ru.com.testcountries.core.data.DataProvider;
+import ru.com.testcountries.ui.screens.Screens;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class CountriesFragmentPresenter
         extends MvpPresenter<CountriesFragmentView>
-        implements CountriesFragmentContract.CountriesFragmentPresenter {
+        implements CountriesFragmentPresenterContract {
 
     private static final String TAG = "CountriesFragmentPresenter";
 
@@ -42,7 +43,6 @@ public class CountriesFragmentPresenter
     @Override
     public void loadCountries(boolean loadFromDb) {
         getViewState().showLoading();
-
         if(loadFromDb) {
             if (!countriesDb.isEmpty()) {
                 loadCountriesFromDb();
@@ -59,6 +59,11 @@ public class CountriesFragmentPresenter
         dataProvider.clearCountriesInDb(throwable -> {
             getViewState().showDataBaseError(throwable);
         });
+    }
+
+    @Override
+    public void goToCountryProfile(String code) {
+        router.navigateTo(new Screens.CountryProfileScreen(code));
     }
 
 // Internal methods

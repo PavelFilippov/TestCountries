@@ -1,4 +1,4 @@
-package ru.com.testcountries.ui.screens;
+package ru.com.testcountries.ui.screens.fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,11 +27,12 @@ import ru.com.testcountries.mvp.countries.CountriesFragmentPresenter;
 import ru.com.testcountries.mvp.countries.CountriesFragmentView;
 import ru.com.testcountries.ui.BaseMainFragment;
 import ru.com.testcountries.ui.adapters.CountriesAdapter;
+import ru.com.testcountries.ui.common.BackButtonListener;
 import ru.com.testcountries.ui.common.RouterProvider;
 import ru.terrakok.cicerone.Router;
 
 @EFragment(R.layout.fragment_countries_list)
-public class CountriesFragment extends BaseMainFragment implements CountriesFragmentView {
+public class CountriesFragment extends BaseMainFragment implements CountriesFragmentView, BackButtonListener {
 
     private static final String TAG = "CountriesFragment";
 
@@ -72,8 +73,8 @@ public class CountriesFragment extends BaseMainFragment implements CountriesFrag
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        application.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
+        application.getAppComponent().inject(this);
     }
 
     @AfterViews
@@ -122,6 +123,12 @@ public class CountriesFragment extends BaseMainFragment implements CountriesFrag
         }
     }
 
+    @Override
+    public boolean onBackPressed() {
+        presenter.onBackPressed();
+        return true;
+    }
+
 //Internal methods
 
     private void setAdapter() {
@@ -139,7 +146,8 @@ public class CountriesFragment extends BaseMainFragment implements CountriesFrag
                 return;
             }
             mLastClickTime = SystemClock.elapsedRealtime();
-
+            lastVisibleElement = position;
+            presenter.goToCountryProfile(model.getAlpha3Code());
         });
     }
 
@@ -167,6 +175,7 @@ public class CountriesFragment extends BaseMainFragment implements CountriesFrag
 
     private void showErrorViewIfEmpty() {
         if(adapter != null && adapter.isEmpty()) {
+            rvCountries.setVisibility(View.GONE);
             clError.setVisibility(View.VISIBLE);
         }
     }

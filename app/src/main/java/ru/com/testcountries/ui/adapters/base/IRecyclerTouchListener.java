@@ -1,4 +1,4 @@
-package ru.com.testdribbble.ui.adapters.base;
+package ru.com.testcountries.ui.adapters.base;
 
 public interface IRecyclerTouchListener<T> {
 

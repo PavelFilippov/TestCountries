@@ -1,4 +1,4 @@
-package ru.com.testdribbble.core;
+package ru.com.testcountries.core;
 
 import java.util.HashMap;
 

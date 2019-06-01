@@ -1,10 +1,14 @@
-package ru.com.testcountries.core.data;
+package ru.com.testcountries.core.data.model;
 
 import java.io.Serializable;
 
 import io.realm.RealmObject;
+import lombok.Getter;
+import lombok.Setter;
 
-public class Currency extends RealmObject implements Serializable {
+@Getter
+@Setter
+public class Currency implements Serializable {
 
     private String code;
     private String name;

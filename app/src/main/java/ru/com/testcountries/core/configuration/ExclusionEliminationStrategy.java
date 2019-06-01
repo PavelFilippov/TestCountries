@@ -1,4 +1,4 @@
-package ru.com.testcountries.core;
+package ru.com.testcountries.core.configuration;
 
 import android.support.annotation.NonNull;
 

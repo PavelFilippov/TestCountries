@@ -1,4 +1,4 @@
-package ru.com.testcountries.core;
+package ru.com.testcountries.core.configuration;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -13,8 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static ru.com.testdribbble.core.configuration.ExclusionEliminationStrategy.Direction.DESERIALIZATION;
-import static ru.com.testdribbble.core.configuration.ExclusionEliminationStrategy.Direction.SERIALIZATION;
+import static ru.com.testcountries.core.configuration.ExclusionEliminationStrategy.Direction.DESERIALIZATION;
+import static ru.com.testcountries.core.configuration.ExclusionEliminationStrategy.Direction.SERIALIZATION;
 
 public class GsonConfiguredFactory {
 

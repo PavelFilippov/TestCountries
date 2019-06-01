@@ -1,102 +1,67 @@
-package ru.com.testdribbble.core.data;
-
-import android.text.TextUtils;
-
-import org.androidannotations.annotations.App;
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.sharedpreferences.Pref;
+package ru.com.testcountries.core.data;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import ru.com.testdribbble.Preferences_;
-import ru.com.testdribbble.TheApplication;
-import ru.com.testdribbble.core.LocalUserProvider;
-import ru.com.testdribbble.core.data.model.Shot;
-import ru.com.testdribbble.core.data.model.Token;
-import ru.com.testdribbble.core.data.model.User;
-import ru.com.testdribbble.core.exception.NoNetworkException;
-import ru.com.testdribbble.core.http.NetworkModule;
-import ru.com.testdribbble.core.utils.NetworkUtils;
-import ru.com.testdribbble.core.utils.RxUtils;
+import ru.com.testcountries.app.TheApplication;
+import ru.com.testcountries.core.data.model.Country;
+import ru.com.testcountries.app.NoNetworkException;
+import ru.com.testcountries.app.Api;
+import ru.com.testcountries.core.utils.NetworkUtils;
+import ru.com.testcountries.core.utils.RxUtils;
 
-import lombok.Getter;
-
-@EBean(scope = EBean.Scope.Singleton)
 public class DataProvider {
 
-    @Getter
-    @Bean
-    NetworkModule networkModule;
-    @Pref
-    Preferences_ pref;
-    @Bean
+    private Api api;
+
+    public DataProvider(Api api) {
+        this.api = api;
+        TheApplication.INSTANCE.getAppComponent().inject(this);
+
+    }
+
+    @Inject
     NetworkUtils networkUtils;
-    @App
-    TheApplication application;
-    @Bean
-    LocalUserProvider userProvider;
-    @Bean
-    ShotsDb shotsDb;
+
+    @Inject
+    CountriesDb countriesDb;
 
 //HTTP methods
 
-    public Disposable getToken(String clientId, String clientSecret, String code, Consumer<Token> onComplete, Consumer<Throwable> onError) {
+    public Disposable getAllCountries(Consumer<List<Country>> onComplete, Consumer<Throwable> onError) {
         if (!hasNetwork()) return createNoNetworkSubscription(onComplete, onError);
-        return networkModule.getTokenApi().getToken(clientId, clientSecret, code)
-                .doOnNext(tokenResponse -> {
-                    if (!TextUtils.isEmpty(tokenResponse.getAccessToken())) {
-                        pref.edit().token().put(tokenResponse.getAccessToken()).apply();
-                    }
-                }).compose(RxUtils.applySchedulers())
-                .subscribe(onComplete, onError);
-    }
-
-    public Disposable getUser(Consumer<User> onComplete, Consumer<Throwable> onError) {
-        if (!hasNetwork()) return createNoNetworkSubscription(onComplete, onError);
-        return networkModule.getMainApi().getUser()
+        return api.getCountries()
                 .compose(RxUtils.applySchedulers())
                 .subscribe(onComplete, onError);
     }
 
-    public Disposable getShots(int page, int perPage, Consumer<List<Shot>> onComplete, Consumer<Throwable> onError) {
+    public Disposable getCountry(String code, Consumer<Country> onComplete, Consumer<Throwable> onError) {
         if (!hasNetwork()) return createNoNetworkSubscription(onComplete, onError);
-        return networkModule.getMainApi().getShots(page, perPage)
+        return api.getCountryByAlphaCode(code)
                 .compose(RxUtils.applySchedulers())
                 .subscribe(onComplete, onError);
     }
 
 //DB methods
 
-    public Disposable getShotsFromDb(Consumer<List<Shot>> onComplete, Consumer<Throwable> onError) {
-        return shotsDb.getShots()
+    public Disposable getCountriesFromDb(Consumer<List<Country>> onComplete, Consumer<Throwable> onError) {
+        return countriesDb.getCountries()
                 .compose(RxUtils.applySchedulerSingle())
                 .subscribe(onComplete, onError);
     }
 
-    public Disposable getShotFromDb(long id, Consumer<Shot> onComplete, Consumer<Throwable> onError) {
-        return shotsDb.getShot(id)
-                .compose(RxUtils.applySchedulerSingle())
-                .subscribe(onComplete, onError);
-    }
-
-    public Disposable updateShotsInDb(List<Shot> shots, Consumer<Throwable> onError) {
-        return shotsDb.updateShots(shots)
+    public Disposable updateCountriesInDb(List<Country> countries, Consumer<Throwable> onError) {
+        return countriesDb.updateCountries(countries)
                 .doOnError(onError)
                 .subscribe();
     }
 
-    public Disposable updateShotInDb(Shot shot, Consumer<Throwable> onError) {
-        return shotsDb.updateShot(shot)
-                .doOnError(onError)
-                .subscribe();
-    }
-
-    public Disposable clearShotsInDb(Consumer<Throwable> onError) {
-        return shotsDb.clearAllShots()
+    public Disposable clearCountriesInDb(Consumer<Throwable> onError) {
+        return countriesDb.clearAllCountries()
                 .doOnError(onError)
                 .subscribe();
     }
@@ -105,7 +70,7 @@ public class DataProvider {
 //Network methods
 
     private boolean hasNetwork() {
-        return networkUtils.hasNetworkConnection();
+        return true;
     }
 
     private <T> Disposable createNoNetworkSubscription(Consumer<T> onComplete, Consumer<Throwable> onError) {

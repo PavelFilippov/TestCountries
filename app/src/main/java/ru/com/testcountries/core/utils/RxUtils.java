@@ -1,4 +1,4 @@
-package ru.com.testdribbble.core.utils;
+package ru.com.testcountries.core.utils;
 
 import android.util.Log;
 
@@ -39,19 +39,6 @@ public class RxUtils {
     public static <T> ObservableTransformer<T, T> applySchedulers() {
 
         return observable -> observable
-                .subscribeOn(Schedulers.from(getExecutorService()))
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public static <T> ObservableTransformer<T, T> applyNotRetrySchedulers() {
-        return observable -> observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public static <T> ObservableTransformer<T, T> applySchedulersWithRetry() {
-        return observable -> observable
-                .retry(5)
                 .subscribeOn(Schedulers.from(getExecutorService()))
                 .observeOn(AndroidSchedulers.mainThread());
     }

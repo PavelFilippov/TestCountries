@@ -1,107 +1,86 @@
-package ru.com.testdribbble.ui.adapters;
+package ru.com.testcountries.ui.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
 import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.GenericRequestBuilder;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.StreamEncoder;
+import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
+import com.caverock.androidsvg.SVG;
 
-import ru.com.testdribbble.R;
-import ru.com.testdribbble.core.data.model.Shot;
-import ru.com.testdribbble.ui.adapters.base.BaseAdapter;
-import ru.com.testdribbble.ui.adapters.base.BaseViewHolder;
-import ru.com.testdribbble.ui.main.shots.IOnViewInItemClick;
-import ru.com.testdribbble.views.ProfileImageProgressBar;
+import java.io.InputStream;
 
-public class ShotsAdapter extends BaseAdapter<Shot, ShotsAdapter.Holder> {
+import ru.com.testcountries.R;
+import ru.com.testcountries.core.data.model.Country;
+import ru.com.testcountries.core.utils.svg.SvgDecoder;
+import ru.com.testcountries.core.utils.svg.SvgDrawableTranscoder;
+import ru.com.testcountries.core.utils.svg.SvgSoftwareLayerSetter;
+import ru.com.testcountries.ui.adapters.base.BaseAdapter;
+import ru.com.testcountries.ui.adapters.base.BaseViewHolder;
 
-    private int itemHeight;
-    private String authorName;
-    private IOnViewInItemClick onViewInItemClick;
+public class CountriesAdapter extends BaseAdapter<Country, CountriesAdapter.Holder> {
 
-    public ShotsAdapter(
-            Context context,
-            int itemHeight,
-            String authorName,
-            IOnViewInItemClick onViewInItemClick) {
+    private GenericRequestBuilder<Uri, InputStream, SVG, PictureDrawable> requestBuilder;
+
+    public CountriesAdapter(Context context) {
         super(context);
-        this.itemHeight = itemHeight;
-        this.authorName = authorName;
-        this.onViewInItemClick = onViewInItemClick;
+        generateRequestBuilder();
     }
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = inflateView(R.layout.item_shot, parent);
-        ViewGroup.LayoutParams lp = itemView.getLayoutParams();
-        lp.height = itemHeight;
-        itemView.setLayoutParams(lp);
+        View itemView = inflateView(R.layout.item_country, parent);
         return new Holder(itemView);
     }
 
     @Override
-    public long getItemId(int position) {
-        return getData().get(position).getId();
-    }
-
-    @Override
     public void onBindViewHolderInternal(Holder holder, int position) {
-        Shot shot = getItemById(position);
-        String filePath = "";
+        Country country = getItemById(position);
 
-        holder.txtAuthorName.setText(authorName != null ? authorName : "");
-        holder.txtShotTitle.setText(shot.getTitle() != null ? shot.getTitle() : "");
-        holder.txtShotDescription.setText(Html.fromHtml(shot.getDescription() != null ? shot.getDescription() : ""));
+        requestBuilder
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .load(Uri.parse(country.getFlag()))
+                .into(holder.imgFlag);
 
-        if(shot.getImages().getHidpi() != null) {
-            filePath = shot.getImages().getHidpi();
-        } else if(shot.getImages().getTwoX() != null) {
-            filePath = shot.getImages().getTwoX();
-        } else if(shot.getImages().getNormal() != null) {
-            filePath = shot.getImages().getNormal();
-        } else if(shot.getImages().getOneX() != null) {
-            filePath = shot.getImages().getOneX();
-        } else if(shot.getImages().getTeaser() != null) {
-            filePath = shot.getImages().getTeaser();
-        }
+        holder.txtCountryName.setText(country.getName());
 
-        if (TextUtils.isEmpty(filePath)) {
-            holder.sdvShot.setVisibility(View.GONE);
-            holder.imgNoImage.setVisibility(View.VISIBLE);
-        } else {
-            holder.imgNoImage.setVisibility(View.GONE);
-            holder.sdvShot.setVisibility(View.VISIBLE);
-            holder.sdvShot.getHierarchy().setProgressBarImage(new ProfileImageProgressBar());
-            holder.sdvShot.setImageURI(Uri.parse(filePath));
-        }
-
-        setupListener(holder.itemView, shot, position);
-
-        holder.txtAuthorName.setOnClickListener(v -> onViewInItemClick.onAuthorNameClick(position));
+        setupListener(holder.itemView, country, position);
 
     }
 
     class Holder extends BaseViewHolder {
 
-        private SimpleDraweeView sdvShot;
-        private AppCompatImageView imgNoImage;
-        private TextView txtAuthorName;
-        private TextView txtShotTitle;
-        private TextView txtShotDescription;
+        private AppCompatImageView imgFlag;
+        private TextView txtCountryName;
+
 
         public Holder(View itemView) {
             super(itemView);
-            sdvShot = getView(R.id.sdvShot);
-            imgNoImage = getView(R.id.imgNoImage);
-            txtAuthorName = getView(R.id.txtAuthorName);
-            txtShotTitle = getView(R.id.txtShotTitle);
-            txtShotDescription = getView(R.id.txtShotDescription);
+            imgFlag = getView(R.id.imgFlag);
+            txtCountryName = getView(R.id.txtCountryName);
+
         }
+    }
+
+    private void generateRequestBuilder() {
+        requestBuilder = Glide.with(context)
+                .using(Glide.buildStreamModelLoader(Uri.class, context), InputStream.class)
+                .from(Uri.class)
+                .as(SVG.class)
+                .transcode(new SvgDrawableTranscoder(), PictureDrawable.class)
+                .sourceEncoder(new StreamEncoder())
+                .cacheDecoder(new FileToStreamDecoder<SVG>(new SvgDecoder()))
+                .decoder(new SvgDecoder())
+                .placeholder(R.drawable.rounded_corners_empty_image)
+                .error(R.drawable.rounded_corners_empty_image)
+                .animate(android.R.anim.fade_in)
+                .listener(new SvgSoftwareLayerSetter<Uri>());
     }
 }

@@ -1,4 +1,4 @@
-package ru.com.testcountries.core.dagger.module;
+package ru.com.testcountries.core.dagger.module.navigation;
 
 import javax.inject.Singleton;
 

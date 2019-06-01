@@ -1,4 +1,4 @@
-package ru.com.testdribbble.core.data.events;
+package ru.com.testcountries.core.data.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

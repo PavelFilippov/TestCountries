@@ -1,4 +1,4 @@
-package ru.com.testdribbble.ui;
+package ru.com.testcountries.ui;
 
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -10,19 +10,16 @@ import org.greenrobot.eventbus.Subscribe;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
-import ru.com.testdribbble.R;
-import ru.com.testdribbble.core.data.events.NetworkData;
-import ru.com.testdribbble.core.exception.NoNetworkException;
-import ru.com.testdribbble.core.exception.PlatformHttpException;
-import ru.com.testdribbble.core.http.NetworkConnectivityAware_;
+import ru.com.testcountries.R;
+import ru.com.testcountries.app.NetworkConnectivityAware_;
+import ru.com.testcountries.core.data.events.NetworkData;
+import ru.com.testcountries.app.NoNetworkException;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = "BaseActivity";
 
     private NetworkConnectivityAware_ receiver;
-    private int screenHeight;
-    private int screenWidth;
 
     @Override
     protected void onStart() {
@@ -35,8 +32,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        screenHeight = displayMetrics.heightPixels;
-        screenWidth = displayMetrics.widthPixels;
     }
 
     @Override
@@ -54,39 +49,30 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (networkData.isConnected()) {
             Crouton.makeText(this, getString(R.string.network_connection_established), new Style.Builder().setBackgroundColorValue(getResources().getColor(R.color.colorDeepSkyBlue)).build()).show();
         } else {
-            Crouton.makeText(this, getString(R.string.network_connection_lost), new Style.Builder().setBackgroundColorValue(getResources().getColor(R.color.colorRoseLight)).build()).show();
+            Crouton.makeText(this, getString(R.string.network_connection_lost), new Style.Builder().setBackgroundColorValue(getResources().getColor(R.color.colorPrimaryDark)).build()).show();
         }
     }
 
     public void showServerError(Throwable throwable) {
-        if (throwable instanceof PlatformHttpException) {
-            onServerErrorError();
-        } else if (throwable instanceof NoNetworkException) {
+        if (throwable instanceof NoNetworkException) {
             EventBus.getDefault().post(new NetworkData(false));
         } else {
-            onServerErrorError();
+            onServerError();
         }
     }
 
     public void showDbError(Throwable throwable) {
         Crouton.makeText(this, getString(R.string.database_error), new Style.Builder()
-                .setBackgroundColorValue(getResources().getColor(R.color.colorRoseLight))
+                .setBackgroundColorValue(getResources().getColor(R.color.colorPrimaryDark))
                 .build())
                 .show();
     }
 
-    private void onServerErrorError() {
+    private void onServerError() {
         Crouton.makeText(this, getString(R.string.server_error), new Style.Builder()
-                .setBackgroundColorValue(getResources().getColor(R.color.colorRoseLight))
+                .setBackgroundColorValue(getResources().getColor(R.color.colorPrimaryDark))
                 .build())
                 .show();
     }
 
-    public int getScreenHeight() {
-        return screenHeight;
-    }
-
-    public int getScreenWidth() {
-        return screenWidth;
-    }
 }

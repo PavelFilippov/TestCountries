@@ -1,4 +1,4 @@
-package ru.com.testdribbble.mvp;
+package ru.com.testcountries.mvp;
 
 public interface BaseView {
 

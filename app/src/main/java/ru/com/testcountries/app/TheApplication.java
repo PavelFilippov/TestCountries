@@ -1,4 +1,4 @@
-package ru.com.testcountries;
+package ru.com.testcountries.app;
 
 import android.support.multidex.MultiDexApplication;
 

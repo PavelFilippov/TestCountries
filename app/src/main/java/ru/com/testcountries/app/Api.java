@@ -1,4 +1,4 @@
-package ru.com.testcountries.core.http;
+package ru.com.testcountries.app;
 
 import java.util.List;
 
@@ -16,6 +16,5 @@ public interface Api {
     Observable<Country> getCountryByAlphaCode(
             @Path("code") String code
     );
-
 
 }

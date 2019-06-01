@@ -1,3 +1,20 @@
 <resources>
+
     <string name="app_name">TestCountries</string>
+
+    <string name="error">Error</string>
+    <string name="server_error">Server Error</string>
+    <string name="database_error">Database Error</string>
+    <string name="network_connection_established">Network connection established</string>
+    <string name="network_connection_lost">Network connection lost</string>
+    <string name="error_occurred_while_loading_countries">Error occurred while loading countries</string>
+    <string name="error_occurred_while_loading_country">Error occurred while loading country</string>
+
+    <string name="currencies_">Currencies: %s</string>
+    <string name="currency_">Currency: %s</string>
+    <string name="languages_">Languages: %s</string>
+    <string name="language_">Language: %s</string>
+    <string name="time_zones_">Time Zones: %s</string>
+    <string name="time_zone_">Time Zone: %s</string>
+
 </resources>

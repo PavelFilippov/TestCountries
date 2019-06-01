@@ -1,4 +1,4 @@
-package ru.com.testdribbble.ui.adapters.base;
+package ru.com.testcountries.ui.adapters.base;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import lombok.Getter;
@@ -28,30 +27,6 @@ public abstract class BaseAdapter<T, V extends BaseViewHolder> extends RecyclerV
     public BaseAdapter(Context context) {
         this.context = context;
         setHasStableIds(true);
-    }
-
-    public void remove(T data) {
-        Iterator<T> iterator = list.iterator();
-        int position = -1;
-        while (iterator.hasNext()) {
-            position++;
-            T next = iterator.next();
-            if (next.equals(data)) {
-                iterator.remove();
-                break;
-            }
-        }
-        notifyDataSetChanged();
-    }
-
-
-    public void remove(int position) {
-        list.remove(position);
-        try {
-            notifyDataSetChanged();
-        } catch (Exception e) {
-            notifyDataSetChanged();
-        }
     }
 
     protected T getItemById(int id) {
@@ -130,11 +105,6 @@ public abstract class BaseAdapter<T, V extends BaseViewHolder> extends RecyclerV
         view.setOnClickListener(v -> {
             if (recyclerTouchListener != null) recyclerTouchListener.onTouch(data, position);
         });
-    }
-
-    public void replaceItem(int index, T item) {
-        list.set(index, item);
-        notifyDataSetChanged();
     }
 
     @Override

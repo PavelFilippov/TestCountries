@@ -1,4 +1,4 @@
-package ru.com.testdribbble.ui.common;
+package ru.com.testcountries.ui.common;
 
 import ru.terrakok.cicerone.Router;
 
